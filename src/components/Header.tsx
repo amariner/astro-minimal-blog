@@ -1,0 +1,49 @@
+"use client";
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
+import { BookOpen, Home, Info, Tag, Folder } from 'lucide-react';
+
+const navItems = [
+  { href: '/', label: 'Home', icon: Home },
+  { href: '/about', label: 'About', icon: Info },
+  { href: '/categories', label: 'Categories', icon: Folder },
+  { href: '/tags', label: 'Tags', icon: Tag },
+];
+
+const Header = () => {
+  const pathname = usePathname();
+
+  return (
+    <header className="bg-card border-b sticky top-0 z-40">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          <Link href="/" className="flex items-center gap-2 text-xl font-bold font-headline">
+            <BookOpen className="text-primary" />
+            <span>Astro Minimal Blog</span>
+          </Link>
+          <nav className="hidden md:flex items-center space-x-6">
+            {navItems.map((item) => {
+              const isActive = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    'text-sm font-medium transition-colors hover:text-primary',
+                    isActive ? 'text-primary' : 'text-muted-foreground'
+                  )}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+      </div>
+    </header>
+  );
+};
+
+export default Header;
