@@ -6,7 +6,8 @@ import { headers } from 'next/headers';
 
 export async function generateStaticParams() {
   const pages = getAllPages();
-  return pages.map((page) => ({
+  const dynamicPages = pages.filter((page) => page.slug !== 'about');
+  return dynamicPages.map((page) => ({
     slug: page.slug,
   }));
 }
