@@ -1,5 +1,6 @@
 ---
-title: "About This Blog"
+title: About This Blog
+slug: about
 ---
 
 Welcome to the Astro Minimal Blog, a clean, simple, and modern space for thoughts, ideas, and stories. This blog is built using the power of Next.js and the flexibility of Decap CMS, providing a seamless content management experience.
