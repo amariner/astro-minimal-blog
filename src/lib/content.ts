@@ -48,49 +48,29 @@ const categoriesDirectory = path.join(contentDirectory, 'categories');
 const tagsDirectory = path.join(contentDirectory, 'tags');
 
 
-function getRawCategories(): Category[] {
-  if (!fs.existsSync(categoriesDirectory)) return [];
-  const files = fs.readdirSync(categoriesDirectory);
+function getRawData<T extends {slug: string, title: string}>(directory: string): T[] {
+  if (!fs.existsSync(directory)) return [];
+  const files = fs.readdirSync(files);
   return files.map(file => {
-    const slug = file.replace(/\.md$/, '');
-    const fullPath = path.join(categoriesDirectory, `${slug}.md`);
+    const fileName = file.replace(/\.md$/, '');
+    const fullPath = path.join(directory, file);
     const fileContents = fs.readFileSync(fullPath, 'utf8');
     const { data, content } = matter(fileContents);
+    
     return {
-      slug: data.slug || slug,
+      ...data,
+      slug: data.slug || slugify(data.title || fileName),
       title: data.title,
-      description: data.description || '',
       content: content,
-      meta_title: data.meta_title,
-      meta_description: data.meta_description,
-    } as Category;
+    } as T;
   });
 }
 
-function getRawTags(): Tag[] {
-  if (!fs.existsSync(tagsDirectory)) return [];
-  const files = fs.readdirSync(tagsDirectory);
-  return files.map(file => {
-    const slug = file.replace(/\.md$/, '');
-    const fullPath = path.join(tagsDirectory, `${slug}.md`);
-    const fileContents = fs.readFileSync(fullPath, 'utf8');
-    const { data, content } = matter(fileContents);
-    return {
-      slug: data.slug || slug,
-      title: data.title,
-      description: data.description || '',
-      content: content,
-      meta_title: data.meta_title,
-      meta_description: data.meta_description,
-    } as Tag;
-  });
-}
+const categoriesFromFiles = getRawData<Category>(categoriesDirectory);
+const categorySlugMap = new Map(categoriesFromFiles.map(c => [c.title, c.slug]));
 
-const categoriesFromFiles = getRawCategories();
-const categoryTitleMap = new Map(categoriesFromFiles.map(c => [c.title, c.slug]));
-
-const tagsFromFiles = getRawTags();
-const tagTitleMap = new Map(tagsFromFiles.map(t => [t.title, t.slug]));
+const tagsFromFiles = getRawData<Tag>(tagsDirectory);
+const tagSlugMap = new Map(tagsFromFiles.map(t => [t.title, t.slug]));
 
 
 function getPosts(): Post[] {
@@ -117,16 +97,16 @@ function getPosts(): Post[] {
     const categoryTitle = data.category || 'Uncategorized';
     
     return {
-      slug,
-      content: content.trim(),
       ...data,
+      slug: data.slug || slugify(data.title),
+      content: content.trim(),
       category: {
         title: categoryTitle,
-        slug: categoryTitleMap.get(categoryTitle) || slugify(categoryTitle),
+        slug: categorySlugMap.get(categoryTitle) || slugify(categoryTitle),
       },
       tags: tagTitles.map(t => ({
         title: t,
-        slug: tagTitleMap.get(t) || slugify(t),
+        slug: tagSlugMap.get(t) || slugify(t),
       })),
     } as Post;
   });
@@ -143,13 +123,14 @@ export function getPostBySlug(slug: string): Post | undefined {
 export function getPage(slug: string): Page | undefined {
   const fullPath = path.join(pagesDirectory, `${slug}.md`);
   if (!fs.existsSync(fullPath)) {
-    return undefined;
+     const allPages = getAllPages();
+     return allPages.find(p => p.slug === slug);
   }
   const fileContents = fs.readFileSync(fullPath, 'utf8');
   const { data, content } = matter(fileContents);
 
   return {
-    slug: slug,
+    slug: data.slug || slug,
     title: data.title,
     content,
     meta_title: data.meta_title,
@@ -164,7 +145,17 @@ export function getAllPages(): Page[] {
   const fileNames = fs.readdirSync(pagesDirectory);
   return fileNames
     .map((fileName) => {
-      return getPage(fileName.replace(/\.md$/, ''));
+      const slug = fileName.replace(/\.md$/, '');
+      const fullPath = path.join(pagesDirectory, fileName);
+      const fileContents = fs.readFileSync(fullPath, 'utf8');
+      const { data, content } = matter(fileContents);
+       return {
+        slug: data.slug || slug,
+        title: data.title,
+        content,
+        meta_title: data.meta_title,
+        meta_description: data.meta_description,
+      };
     })
     .filter((page): page is Page => page !== undefined);
 }
