@@ -1,10 +1,13 @@
 import { getAllPages, posts, getAllCategories, getAllTags } from '@/lib/content';
 import { MetadataRoute } from 'next';
-import { siteConfig } from '@/lib/site';
-
-const baseUrl = siteConfig.url;
+import { headers } from 'next/headers';
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  const headersList = headers();
+  const host = headersList.get('host');
+  const protocol = host?.includes('localhost') ? 'http' : 'https';
+  const baseUrl = `${protocol}://${host}`;
+
   const postUrls = posts.map((post) => ({
     url: `${baseUrl}/blog/${post.slug}`,
     lastModified: new Date(post.date),

@@ -6,27 +6,36 @@ import Footer from '@/components/Footer';
 import React from 'react';
 import { HeadSnippets, BodyStartSnippets, BodyEndSnippets } from '@/components/CodeInjector';
 import { siteConfig } from '@/lib/site';
+import { headers } from 'next/headers';
 
-export const metadata: Metadata = {
-  title: {
-    default: siteConfig.name,
-    template: `%s | ${siteConfig.name}`,
-  },
-  description: siteConfig.description,
-  openGraph: {
-    title: siteConfig.name,
+export async function generateMetadata(): Promise<Metadata> {
+  const headersList = headers();
+  const host = headersList.get('host');
+  const protocol = host?.includes('localhost') ? 'http' : 'https';
+  const url = `${protocol}://${host}`;
+
+  return {
+    title: {
+      default: siteConfig.name,
+      template: `%s | ${siteConfig.name}`,
+    },
     description: siteConfig.description,
-    type: 'website',
-    locale: 'en_US',
-    url: siteConfig.url,
-    siteName: siteConfig.name,
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: siteConfig.name,
-    description: siteConfig.description,
-  },
-};
+    openGraph: {
+      title: siteConfig.name,
+      description: siteConfig.description,
+      type: 'website',
+      locale: 'en_US',
+      url: url,
+      siteName: siteConfig.name,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: siteConfig.name,
+      description: siteConfig.description,
+    },
+  };
+}
+
 
 export default function RootLayout({
   children,
