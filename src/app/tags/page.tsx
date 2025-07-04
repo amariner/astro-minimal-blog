@@ -2,6 +2,7 @@ import { getAllTags } from '@/lib/content';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
+import { slugify } from '@/lib/utils';
 
 export default function TagsPage() {
   const tags = getAllTags();
@@ -15,7 +16,7 @@ export default function TagsPage() {
         <CardContent>
           <div className="flex flex-wrap gap-2">
             {tags.map((tag) => (
-              <Link key={tag} href={`/tags/${tag.toLowerCase()}`}>
+              <Link key={tag} href={`/tags/${slugify(tag)}`}>
                 <Badge variant="default" className="text-lg py-1 px-3 hover:bg-primary/80 transition-colors">
                   {tag}
                 </Badge>

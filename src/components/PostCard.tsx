@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/componen
 import { Badge } from '@/components/ui/badge';
 import type { Post } from '@/lib/content';
 import { Calendar, Folder, Tag } from 'lucide-react';
+import { slugify } from '@/lib/utils';
 
 interface PostCardProps {
   post: Post;
@@ -38,14 +39,14 @@ export default function PostCard({ post }: PostCardProps) {
             </div>
             <div className="flex items-center gap-2">
                 <Folder className="w-4 h-4" />
-                <Link href={`/categories/${post.category.toLowerCase()}`} className="hover:text-primary">{post.category}</Link>
+                <Link href={`/categories/${slugify(post.category)}`} className="hover:text-primary">{post.category}</Link>
             </div>
         </div>
         <p className="text-muted-foreground">{summary}</p>
       </CardContent>
       <CardFooter className="flex-wrap gap-2">
         {post.tags.map((tag) => (
-          <Link key={tag} href={`/tags/${tag.toLowerCase()}`}>
+          <Link key={tag} href={`/tags/${slugify(tag)}`}>
             <Badge variant="secondary" className="hover:bg-accent transition-colors">
                 <Tag className="w-3 h-3 mr-1" />
                 {tag}

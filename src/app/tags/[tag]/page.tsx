@@ -1,19 +1,22 @@
-import { getAllTags, getPostsByTag } from '@/lib/content';
+import { getAllTags, getPostsByTag, getTag } from '@/lib/content';
 import PostCard from '@/components/PostCard';
 import { notFound } from 'next/navigation';
+import { slugify } from '@/lib/utils';
 
 export async function generateStaticParams() {
   const tags = getAllTags();
   return tags.map((tag) => ({
-    tag: tag.toLowerCase(),
+    tag: slugify(tag),
   }));
 }
 
 export default function TagPage({ params }: { params: { tag: string } }) {
   const posts = getPostsByTag(params.tag);
-  const tagName = params.tag.charAt(0).toUpperCase() + params.tag.slice(1);
+  const tagData = getTag(params.tag);
+  const tagName = tagData?.title || params.tag.charAt(0).toUpperCase() + params.tag.slice(1);
+  const tagDescription = tagData?.description;
 
-  if (posts.length === 0) {
+  if (posts.length === 0 && !tagData) {
     notFound();
   }
 
@@ -22,14 +25,18 @@ export default function TagPage({ params }: { params: { tag: string } }) {
       <div className="text-center">
         <h1 className="text-4xl md:text-5xl font-bold tracking-tighter leading-tight">Tag: {tagName}</h1>
         <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
-          Posts tagged with &quot;{tagName}&quot;.
+          {tagDescription || `Posts tagged with "${tagName}".`}
         </p>
       </div>
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {posts.map((post) => (
-          <PostCard key={post.slug} post={post} />
-        ))}
-      </div>
+       {posts.length > 0 ? (
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {posts.map((post) => (
+            <PostCard key={post.slug} post={post} />
+          ))}
+        </div>
+      ) : (
+         <p className="text-center text-muted-foreground">No posts found with this tag yet.</p>
+      )}
     </div>
   );
 }

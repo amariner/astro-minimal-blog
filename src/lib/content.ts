@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import { slugify } from './utils';
 
 export interface Post {
   slug: string;
@@ -18,9 +19,23 @@ export interface Page {
   content: string;
 }
 
+export interface Category {
+  slug: string;
+  title: string;
+  description?: string;
+}
+
+export interface Tag {
+  slug: string;
+  title: string;
+  description?: string;
+}
+
 const contentDirectory = path.join(process.cwd(), 'content');
 const postsDirectory = path.join(contentDirectory, 'posts');
 const pagesDirectory = path.join(contentDirectory, 'pages');
+const categoriesDirectory = path.join(contentDirectory, 'categories');
+const tagsDirectory = path.join(contentDirectory, 'tags');
 
 function getPosts(): Post[] {
   if (!fs.existsSync(postsDirectory)) {
@@ -75,20 +90,68 @@ export function getPage(pageName: string): Page | undefined {
   };
 }
 
+export function getCategory(slug: string): Category | undefined {
+  const filePath = path.join(categoriesDirectory, `${slug}.md`);
+  if (!fs.existsSync(filePath)) {
+    return undefined;
+  }
+  const fileContents = fs.readFileSync(filePath, 'utf8');
+  const { data } = matter(fileContents);
+
+  return {
+    slug: slug,
+    title: data.title,
+    description: data.description || '',
+  };
+}
+
+export function getTag(slug: string): Tag | undefined {
+  const filePath = path.join(tagsDirectory, `${slug}.md`);
+  if (!fs.existsSync(filePath)) {
+    return undefined;
+  }
+  const fileContents = fs.readFileSync(filePath, 'utf8');
+  const { data } = matter(fileContents);
+
+  return {
+    slug: slug,
+    title: data.title,
+    description: data.description || '',
+  };
+}
+
 export function getAllCategories() {
-  const categories = posts.map((post) => post.category);
+  if (!fs.existsSync(categoriesDirectory)) {
+    const categories = posts.map((post) => post.category);
+    return [...new Set(categories)];
+  }
+  const files = fs.readdirSync(categoriesDirectory);
+  const categories = files.map(file => {
+    const fileContents = fs.readFileSync(path.join(categoriesDirectory, file), 'utf8');
+    const { data } = matter(fileContents);
+    return data.title;
+  })
   return [...new Set(categories)];
 }
 
 export function getPostsByCategory(category: string) {
-  return posts.filter((post) => post.category.toLowerCase() === category.toLowerCase());
+  return posts.filter((post) => slugify(post.category) === category.toLowerCase());
 }
 
 export function getAllTags() {
-  const tags = posts.flatMap((post) => post.tags);
-  return [...new Set(tags)];
+    if (!fs.existsSync(tagsDirectory)) {
+        const tags = posts.flatMap((post) => post.tags);
+        return [...new Set(tags)];
+    }
+    const files = fs.readdirSync(tagsDirectory);
+    const tags = files.map(file => {
+        const fileContents = fs.readFileSync(path.join(tagsDirectory, file), 'utf8');
+        const { data } = matter(fileContents);
+        return data.title;
+    });
+    return [...new Set(tags)];
 }
 
 export function getPostsByTag(tag: string) {
-  return posts.filter((post) => post.tags.map(t => t.toLowerCase()).includes(tag.toLowerCase()));
+  return posts.filter((post) => post.tags.map(t => slugify(t)).includes(tag.toLowerCase()));
 }
