@@ -1,5 +1,6 @@
 ---
-title: IA Futura Desentrañando el Universo de la Inteligencia Artificial
+title: IA Futura Desentrañando el Universo de la Inteligencia
+slug: ia-futura
 meta_title: "IA Futura: Desentrañando el Universo de la Inteligencia Artificial"
 meta_description: "IA Futura: Desentrañando el Universo de la Inteligencia Artificial"
 date: 2025-07-04T10:48:00.000Z
