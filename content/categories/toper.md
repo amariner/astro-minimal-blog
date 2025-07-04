@@ -1,6 +1,6 @@
 ---
 title: Toper
-slug: Toper-top
+slug: toper-top
 meta_title: Toper
 meta_description: Toper
 description: Toper
