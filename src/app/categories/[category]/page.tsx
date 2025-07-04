@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 export async function generateStaticParams() {
   const categories = getAllCategories();
   return categories.map((category) => ({
-    category: slugify(category),
+    category: slugify(category.title),
   }));
 }
 
@@ -52,12 +52,10 @@ export default function CategoryPage({ params }: { params: { category: string } 
          <p className="text-center text-muted-foreground">No posts found in this category yet.</p>
       )}
       {categoryData?.content && (
-        <div className="mt-12">
-          <Card>
-            <CardContent className="prose dark:prose-invert max-w-none pt-6">
-              <pre className="whitespace-pre-wrap font-body text-base bg-transparent p-0">{categoryData.content}</pre>
-            </CardContent>
-          </Card>
+        <div className="mt-12 max-w-4xl mx-auto">
+          <div className="prose dark:prose-invert max-w-none text-lg">
+            <p className="whitespace-pre-wrap font-body leading-relaxed">{categoryData.content}</p>
+          </div>
         </div>
       )}
     </div>

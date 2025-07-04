@@ -1,29 +1,27 @@
 import { getAllTags } from '@/lib/content';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
+import Link from 'next/link';
 
 export default function TagsPage() {
   const tags = getAllTags();
 
   return (
     <div className="max-w-4xl mx-auto">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-4xl">Tags</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-wrap gap-2">
-            {tags.map((tag) => (
-              <Link key={tag.slug} href={`/tags/${tag.slug}`}>
-                <Badge variant="default" className="text-lg py-1 px-3 hover:bg-primary/80 transition-colors">
-                  {tag.title}
-                </Badge>
-              </Link>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      <div className="text-center mb-12">
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tighter leading-tight">All Tags</h1>
+         <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
+            Browse posts by tag.
+        </p>
+      </div>
+      <div className="flex flex-wrap gap-2 justify-center">
+        {tags.map((tag) => (
+           <Link key={tag.slug} href={`/tags/${tag.slug}`}>
+            <Badge variant="secondary" className="text-md py-2 px-4 hover:bg-primary hover:text-primary-foreground transition-colors">
+              {tag.title}
+            </Badge>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }

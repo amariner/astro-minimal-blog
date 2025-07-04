@@ -49,35 +49,30 @@ export default function PostPage({ params }: { params: { slug: string } }) {
   return (
     <article className="max-w-4xl mx-auto py-8">
       <header className="mb-8">
-        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tighter leading-tight mb-4">{post.title}</h1>
-        <div className="text-muted-foreground space-y-2">
-          <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4" />
+        <div className="text-center mb-4">
+            <Link href={`/categories/${post.category.slug}`} className="hover:text-primary text-sm font-semibold uppercase tracking-wider">{post.category.title}</Link>
+        </div>
+        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter leading-tight mb-4 text-center">{post.title}</h1>
+        <div className="text-muted-foreground text-center">
             <span>{new Date(post.date).toLocaleDateString()}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Folder className="w-4 h-4" />
-            <Link href={`/categories/${post.category.slug}`} className="hover:text-primary">{post.category.title}</Link>
-          </div>
         </div>
         {post.thumbnail && (
-          <div className="relative aspect-video mt-8 rounded-lg overflow-hidden">
+          <div className="relative aspect-video mt-8 rounded-lg overflow-hidden shadow-lg">
             <Image src={post.thumbnail} alt={post.title} fill className="object-cover" data-ai-hint="blog post" />
           </div>
         )}
       </header>
 
-      <div className="prose dark:prose-invert max-w-none">
-         <pre className="whitespace-pre-wrap font-body text-base bg-secondary p-4 rounded-md">{post.content}</pre>
-         <p className="text-sm text-muted-foreground mt-4 italic">Note: For a full experience, a markdown rendering library would be required. The content is displayed as plain text.</p>
+      <div className="prose dark:prose-invert max-w-none text-lg">
+         <p className="whitespace-pre-wrap font-body leading-relaxed">{post.content}</p>
       </div>
 
-      <footer className="mt-8">
+      <footer className="mt-12 pt-8 border-t">
+        <h3 className="text-lg font-headline font-semibold mb-4">Tags</h3>
         <div className="flex items-center gap-2 flex-wrap">
           {post.tags.map((tag) => (
             <Link key={tag.slug} href={`/tags/${tag.slug}`}>
-               <Badge variant="secondary" className="hover:bg-accent transition-colors">
-                <Tag className="w-3 h-3 mr-1" />
+               <Badge variant="outline" className="font-normal">
                 {tag.title}
               </Badge>
             </Link>

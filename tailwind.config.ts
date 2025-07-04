@@ -10,8 +10,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"Lato"', 'sans-serif'],
-        code: ['monospace'],
+        body: ['"PT Sans"', 'sans-serif'],
+        headline: ['"Space Grotesk"', 'sans-serif'],
       },
       colors: {
         background: 'hsl(var(--background))',

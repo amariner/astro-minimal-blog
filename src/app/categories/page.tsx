@@ -1,30 +1,27 @@
 import { getAllCategories } from '@/lib/content';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
-import { Folder } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
 export default function CategoriesPage() {
   const categories = getAllCategories();
 
   return (
     <div className="max-w-4xl mx-auto">
-       <Card>
-        <CardHeader>
-          <CardTitle className="text-4xl">Categories</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {categories.map((category) => (
-              <Link key={category.slug} href={`/categories/${category.slug}`}>
-                <div className="p-4 border rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors flex items-center gap-2">
-                  <Folder className="w-5 h-5" />
-                  <span className="font-medium">{category.title}</span>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+       <div className="text-center mb-12">
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tighter leading-tight">All Categories</h1>
+        <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
+            Browse posts by category.
+        </p>
+      </div>
+      <div className="flex flex-wrap gap-2 justify-center">
+        {categories.map((category) => (
+          <Link key={category.slug} href={`/categories/${category.slug}`}>
+            <Badge variant="secondary" className="text-lg py-2 px-4 hover:bg-primary hover:text-primary-foreground transition-colors">
+              {category.title}
+            </Badge>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }

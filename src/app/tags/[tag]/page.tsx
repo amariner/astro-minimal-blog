@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 export async function generateStaticParams() {
   const tags = getAllTags();
   return tags.map((tag) => ({
-    tag: slugify(tag),
+    tag: slugify(tag.title),
   }));
 }
 
@@ -43,7 +43,7 @@ export default function TagPage({ params }: { params: { tag: string } }) {
         </p>
       </div>
        {posts.length > 0 ? (
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-x-8 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
           {posts.map((post) => (
             <PostCard key={post.slug} post={post} />
           ))}
@@ -52,12 +52,10 @@ export default function TagPage({ params }: { params: { tag: string } }) {
          <p className="text-center text-muted-foreground">No posts found with this tag yet.</p>
       )}
       {tagData?.content && (
-        <div className="mt-12">
-          <Card>
-            <CardContent className="prose dark:prose-invert max-w-none pt-6">
-              <pre className="whitespace-pre-wrap font-body text-base bg-transparent p-0">{tagData.content}</pre>
-            </CardContent>
-          </Card>
+        <div className="mt-12 max-w-4xl mx-auto">
+          <div className="prose dark:prose-invert max-w-none text-lg">
+            <p className="whitespace-pre-wrap font-body leading-relaxed">{tagData.content}</p>
+          </div>
         </div>
       )}
     </div>
