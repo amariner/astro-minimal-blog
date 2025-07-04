@@ -16,11 +16,6 @@ export default function Home() {
         <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
           Thoughts, stories, and ideas on technology, lifestyle, and travel, presented in a clean, modern, and distraction-free design.
         </p>
-         <div className="mt-8">
-            <Button size="lg" asChild>
-                <Link href="/about">Learn More</Link>
-            </Button>
-        </div>
       </section>
 
       {latestPost && (

@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Menu } from 'lucide-react';
 
 const navItems = [
   { href: '/', label: 'Home' },
@@ -39,11 +41,36 @@ const Header = () => {
               );
             })}
           </nav>
-           <div className="hidden md:block">
-            <Button asChild variant="outline">
-                <a href="/admin">Login</a>
-            </Button>
-           </div>
+          <div className="md:hidden">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-6 w-6" />
+                  <span className="sr-only">Toggle navigation menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right">
+                <nav className="grid gap-4 text-lg font-medium mt-8">
+                  {navItems.map((item) => {
+                    const isActive = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
+                    return (
+                        <Link
+                        key={item.href}
+                        href={item.href}
+                        className={cn(
+                            'transition-colors hover:text-primary',
+                            isActive ? 'text-primary' : 'text-muted-foreground'
+                        )}
+                        >
+                        {item.label}
+                        </Link>
+                    );
+                   })}
+                   <a href="/admin" className="transition-colors hover:text-primary text-muted-foreground">Admin Login</a>
+                </nav>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </div>
     </header>
