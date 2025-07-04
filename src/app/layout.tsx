@@ -3,6 +3,9 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { getAllCodeSnippets } from '@/lib/content';
+import parse from 'html-react-parser';
+import React from 'react';
 
 // IMPORTANT: Replace with your actual site URL for better SEO.
 const siteUrl = "https://your-site-url.com";
@@ -33,6 +36,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const snippets = getAllCodeSnippets();
+
   return (
     <html lang="en">
       <head>
@@ -43,8 +48,14 @@ export default function RootLayout({
           rel="stylesheet"
         />
         <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+        {snippets.map((snippet) =>
+          snippet.head_code ? <React.Fragment key={`head-${snippet.slug}`}>{parse(snippet.head_code)}</React.Fragment> : null
+        )}
       </head>
       <body className="font-body antialiased min-h-screen flex flex-col">
+        {snippets.map((snippet) =>
+          snippet.body_code ? <React.Fragment key={`body-${snippet.slug}`}>{parse(snippet.body_code)}</React.Fragment> : null
+        )}
         <Header />
         <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {children}

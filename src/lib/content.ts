@@ -41,29 +41,41 @@ export interface Tag {
   meta_description?: string;
 }
 
+export interface CodeSnippet {
+  slug: string;
+  title: string;
+  head_code?: string;
+  body_code?: string;
+}
+
+
 const contentDirectory = path.join(process.cwd(), 'content');
 const postsDirectory = path.join(contentDirectory, 'posts');
 const pagesDirectory = path.join(contentDirectory, 'pages');
 const categoriesDirectory = path.join(contentDirectory, 'categories');
 const tagsDirectory = path.join(contentDirectory, 'tags');
+const codeSnippetsDirectory = path.join(contentDirectory, 'code_snippets');
 
 
 function getRawData<T extends {slug: string, title: string}>(directory: string): T[] {
   if (!fs.existsSync(directory)) return [];
   const files = fs.readdirSync(directory);
   return files.map(file => {
+    if (!file.endsWith('.md')) return null;
     const fileName = file.replace(/\.md$/, '');
     const fullPath = path.join(directory, file);
     const fileContents = fs.readFileSync(fullPath, 'utf8');
     const { data, content } = matter(fileContents);
     
+    if (!data.title) return null;
+
     return {
       ...data,
       slug: data.slug || slugify(data.title || fileName),
       title: data.title,
       content: content,
     } as T;
-  });
+  }).filter((item): item is T => item !== null);
 }
 
 const categoriesFromFiles = getRawData<Category>(categoriesDirectory);
@@ -79,7 +91,7 @@ function getPosts(): Post[] {
   }
   const fileNames = fs.readdirSync(postsDirectory);
   const allPostsData = fileNames.map((fileName) => {
-    const slug = fileName.replace(/\.md$/, '');
+    const slugFromFile = fileName.replace(/\.md$/, '');
     const fullPath = path.join(postsDirectory, fileName);
     const fileContents = fs.readFileSync(fullPath, 'utf8');
 
@@ -98,7 +110,7 @@ function getPosts(): Post[] {
     
     return {
       ...data,
-      slug: data.slug || slugify(data.title),
+      slug: data.slug || slugify(data.title) || slugFromFile,
       content: content.trim(),
       category: {
         title: categoryTitle,
@@ -121,43 +133,12 @@ export function getPostBySlug(slug: string): Post | undefined {
 }
 
 export function getPage(slug: string): Page | undefined {
-  const fullPath = path.join(pagesDirectory, `${slug}.md`);
-  if (!fs.existsSync(fullPath)) {
-     const allPages = getAllPages();
-     return allPages.find(p => p.slug === slug);
-  }
-  const fileContents = fs.readFileSync(fullPath, 'utf8');
-  const { data, content } = matter(fileContents);
-
-  return {
-    slug: data.slug || slug,
-    title: data.title,
-    content,
-    meta_title: data.meta_title,
-    meta_description: data.meta_description,
-  };
+  const allPages = getAllPages();
+  return allPages.find(p => p.slug === slug);
 }
 
 export function getAllPages(): Page[] {
-  if (!fs.existsSync(pagesDirectory)) {
-    return [];
-  }
-  const fileNames = fs.readdirSync(pagesDirectory);
-  return fileNames
-    .map((fileName) => {
-      const slug = fileName.replace(/\.md$/, '');
-      const fullPath = path.join(pagesDirectory, fileName);
-      const fileContents = fs.readFileSync(fullPath, 'utf8');
-      const { data, content } = matter(fileContents);
-       return {
-        slug: data.slug || slug,
-        title: data.title,
-        content,
-        meta_title: data.meta_title,
-        meta_description: data.meta_description,
-      };
-    })
-    .filter((page): page is Page => page !== undefined);
+  return getRawData<Page>(pagesDirectory);
 }
 
 
@@ -165,6 +146,7 @@ export function getCategory(slug: string): Category | undefined {
   const cat = categoriesFromFiles.find(c => c.slug === slug);
   if (cat) return cat;
 
+  // Fallback for categories defined only in posts
   const postWithCategory = posts.find(p => p.category.slug === slug);
   if (postWithCategory) {
     return { slug: postWithCategory.category.slug, title: postWithCategory.category.title };
@@ -176,6 +158,7 @@ export function getTag(slug: string): Tag | undefined {
   const tag = tagsFromFiles.find(t => t.slug === slug);
   if (tag) return tag;
 
+  // Fallback for tags defined only in posts
   const postWithTag = posts.find(p => p.tags.some(t => t.slug === slug));
   if (postWithTag) {
     const foundTag = postWithTag.tags.find(t => t.slug === slug)!;
@@ -226,4 +209,30 @@ export function getAllTags(): Tag[] {
 
 export function getPostsByTag(tagSlug: string) {
   return posts.filter((post) => post.tags.some(t => t.slug === tagSlug.toLowerCase()));
+}
+
+export function getAllCodeSnippets(): CodeSnippet[] {
+  if (!fs.existsSync(codeSnippetsDirectory)) {
+    return [];
+  }
+  const fileNames = fs.readdirSync(codeSnippetsDirectory);
+  const allSnippetsData = fileNames.map((fileName) => {
+    if (!fileName.endsWith('.md')) return null;
+    const slug = fileName.replace(/\.md$/, '');
+    const fullPath = path.join(codeSnippetsDirectory, fileName);
+    const fileContents = fs.readFileSync(fullPath, 'utf8');
+
+    const { data } = matter(fileContents);
+    
+    if (!data.title) return null;
+
+    return {
+      slug,
+      title: data.title,
+      head_code: data.head_code,
+      body_code: data.body_code,
+    } as CodeSnippet;
+  }).filter((s): s is CodeSnippet => s !== null);
+
+  return allSnippetsData;
 }
