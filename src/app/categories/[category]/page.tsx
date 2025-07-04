@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { slugify } from '@/lib/utils';
 import type { Metadata } from 'next';
 import { Card, CardContent } from '@/components/ui/card';
+import { headers } from 'next/headers';
 
 export async function generateStaticParams() {
   const categories = getAllCategories();
@@ -16,10 +17,24 @@ export async function generateMetadata({ params }: { params: { category: string 
   const categoryData = getCategory(params.category);
   const categoryName = categoryData?.title || params.category.charAt(0).toUpperCase() + params.category.slice(1);
   const description = categoryData?.meta_description || categoryData?.description || `Posts filed under the "${categoryName}" category.`;
+  
+  const headersList = headers();
+  const host = headersList.get('host');
+  const protocol = host?.includes('localhost') ? 'http' : 'https';
+  const baseUrl = `${protocol}://${host}`;
+  const pageUrl = `${baseUrl}/categories/${params.category}`;
 
   return {
     title: categoryData?.meta_title || categoryName,
     description: description,
+    alternates: {
+      canonical: pageUrl,
+    },
+    openGraph: {
+      title: categoryData?.meta_title || categoryName,
+      description: description,
+      url: pageUrl,
+    }
   };
 }
 

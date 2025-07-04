@@ -12,7 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const headersList = headers();
   const host = headersList.get('host');
   const protocol = host?.includes('localhost') ? 'http' : 'https';
-  const url = `${protocol}://${host}`;
+  const baseUrl = `${protocol}://${host}`;
 
   return {
     title: {
@@ -20,12 +20,19 @@ export async function generateMetadata(): Promise<Metadata> {
       template: `%s | ${siteConfig.name}`,
     },
     description: siteConfig.description,
+    robots: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
+    alternates: {
+      canonical: baseUrl,
+      types: {
+        'application/rss+xml': `${baseUrl}/feed`,
+      },
+    },
     openGraph: {
       title: siteConfig.name,
       description: siteConfig.description,
       type: 'website',
       locale: 'en_US',
-      url: url,
+      url: baseUrl,
       siteName: siteConfig.name,
     },
     twitter: {
@@ -42,8 +49,20 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headersList = headers();
+  const host = headersList.get('host');
+  const protocol = host?.includes('localhost') ? 'http' : 'https';
+  const baseUrl = `${protocol}://${host}`;
+
+  const webSiteJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: siteConfig.name,
+    url: baseUrl,
+  };
+  
   return (
-    <html lang="en">
+    <html lang="en-US">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -52,12 +71,19 @@ export default function RootLayout({
           rel="stylesheet"
         />
         <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteJsonLd) }}
+        />
         <HeadSnippets />
       </head>
       <body className="font-body antialiased min-h-screen flex flex-col">
+        <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:px-4 focus:py-2 focus:bg-background focus:text-foreground">
+          Skip to content
+        </a>
         <BodyStartSnippets />
         <Header />
-        <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+        <main id="main" className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
           {children}
         </main>
         <Footer />

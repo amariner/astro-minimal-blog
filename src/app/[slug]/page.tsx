@@ -2,6 +2,7 @@ import { getAllPages, getPage } from '@/lib/content';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
 
 export async function generateStaticParams() {
   const pages = getAllPages();
@@ -19,14 +20,24 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     };
   }
 
+  const headersList = headers();
+  const host = headersList.get('host');
+  const protocol = host?.includes('localhost') ? 'http' : 'https';
+  const baseUrl = `${protocol}://${host}`;
+  const pageUrl = `${baseUrl}/${page.slug}`;
+
   const description = page.meta_description || page.content.substring(0, 160).replace(/\n/g, ' ');
 
   return {
     title: page.meta_title || page.title,
     description: description,
+    alternates: {
+      canonical: pageUrl,
+    },
     openGraph: {
       title: page.meta_title || page.title,
       description: description,
+      url: pageUrl,
     },
     twitter: {
        title: page.meta_title || page.title,

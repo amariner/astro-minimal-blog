@@ -31,6 +31,7 @@ export default function Home() {
                             fill 
                             className="object-cover transition-transform duration-300 group-hover:scale-105"
                             data-ai-hint="technology abstract"
+                            priority
                             />
                         </div>
                     )}
