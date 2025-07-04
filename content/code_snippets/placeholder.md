@@ -1,7 +1,7 @@
 ---
 title: Placeholder
 head_code:
-  code: <script>/* Placeholder for head scripts */</script>
+  code: <script>hola codigo</script>
 body_code:
   code: <div class="add-code-body-start"></div>
 body_end_code:
