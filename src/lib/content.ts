@@ -1,3 +1,4 @@
+
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
@@ -79,10 +80,7 @@ function getRawData<T extends {slug: string, title: string}>(directory: string):
 }
 
 const categoriesFromFiles = getRawData<Category>(categoriesDirectory);
-const categorySlugMap = new Map(categoriesFromFiles.map(c => [c.title, c.slug]));
-
 const tagsFromFiles = getRawData<Tag>(tagsDirectory);
-const tagSlugMap = new Map(tagsFromFiles.map(t => [t.title, t.slug]));
 
 
 function getPosts(): Post[] {
@@ -114,12 +112,15 @@ function getPosts(): Post[] {
       content: content.trim(),
       category: {
         title: categoryTitle,
-        slug: categorySlugMap.get(categoryTitle) || slugify(categoryTitle),
+        slug: getCategory(slugify(categoryTitle))?.slug || slugify(categoryTitle),
       },
-      tags: tagTitles.map(t => ({
-        title: t,
-        slug: tagSlugMap.get(t) || slugify(t),
-      })),
+      tags: tagTitles.map(t => {
+        const tagSlug = getTag(slugify(t))?.slug || slugify(t);
+        return {
+          title: t,
+          slug: tagSlug,
+        };
+      }),
     } as Post;
   });
 
@@ -143,28 +144,11 @@ export function getAllPages(): Page[] {
 
 
 export function getCategory(slug: string): Category | undefined {
-  const cat = categoriesFromFiles.find(c => c.slug === slug);
-  if (cat) return cat;
-
-  // Fallback for categories defined only in posts
-  const postWithCategory = posts.find(p => p.category.slug === slug);
-  if (postWithCategory) {
-    return { slug: postWithCategory.category.slug, title: postWithCategory.category.title };
-  }
-  return undefined;
+  return categoriesFromFiles.find(c => c.slug === slug);
 }
 
 export function getTag(slug: string): Tag | undefined {
-  const tag = tagsFromFiles.find(t => t.slug === slug);
-  if (tag) return tag;
-
-  // Fallback for tags defined only in posts
-  const postWithTag = posts.find(p => p.tags.some(t => t.slug === slug));
-  if (postWithTag) {
-    const foundTag = postWithTag.tags.find(t => t.slug === slug)!;
-    return { slug: foundTag.slug, title: foundTag.title };
-  }
-  return undefined;
+  return tagsFromFiles.find(t => t.slug === slug);
 }
 
 export function getAllCategories(): Category[] {
@@ -226,12 +210,28 @@ export function getAllCodeSnippets(): CodeSnippet[] {
     
     if (!data.title) return null;
 
+    // The 'code' widget in Decap CMS can store data as an object, e.g., { code: '...', lang: '...' }.
+    // The `parse` function from `html-react-parser` requires a string, so we must extract it.
+    const getCodeString = (field: any): string | undefined => {
+      if (typeof field === 'string') {
+        return field;
+      }
+      // Check if it's an object with a 'code' property that is a string
+      if (field && typeof field === 'object' && typeof field.code === 'string') {
+        return field.code;
+      }
+      return undefined;
+    };
+
+    const head_code = getCodeString(data.head_code);
+    const body_code = getCodeString(data.body_code);
+
     return {
       slug,
       title: data.title,
-      head_code: data.head_code,
-      body_code: data.body_code,
-    } as CodeSnippet;
+      head_code,
+      body_code,
+    };
   }).filter((s): s is CodeSnippet => s !== null);
 
   return allSnippetsData;
