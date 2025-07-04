@@ -11,24 +11,32 @@ export interface Post {
   tags: string[];
   thumbnail?: string;
   content: string;
+  meta_title?: string;
+  meta_description?: string;
 }
 
 export interface Page {
   slug: string;
   title: string;
   content: string;
+  meta_title?: string;
+  meta_description?: string;
 }
 
 export interface Category {
   slug: string;
   title: string;
   description?: string;
+  meta_title?: string;
+  meta_description?: string;
 }
 
 export interface Tag {
   slug: string;
   title: string;
   description?: string;
+  meta_title?: string;
+  meta_description?: string;
 }
 
 const contentDirectory = path.join(process.cwd(), 'content');
@@ -75,8 +83,8 @@ export function getPostBySlug(slug: string): Post | undefined {
   return posts.find((post) => post.slug === slug);
 }
 
-export function getPage(pageName: string): Page | undefined {
-  const fullPath = path.join(pagesDirectory, `${pageName}.md`);
+export function getPage(slug: string): Page | undefined {
+  const fullPath = path.join(pagesDirectory, `${slug}.md`);
   if (!fs.existsSync(fullPath)) {
     return undefined;
   }
@@ -84,16 +92,33 @@ export function getPage(pageName: string): Page | undefined {
   const { data, content } = matter(fileContents);
 
   return {
-    slug: pageName,
+    slug: slug,
     title: data.title,
     content,
+    meta_title: data.meta_title,
+    meta_description: data.meta_description,
   };
 }
+
+export function getAllPages(): Page[] {
+  if (!fs.existsSync(pagesDirectory)) {
+    return [];
+  }
+  const fileNames = fs.readdirSync(pagesDirectory);
+  return fileNames
+    .map((fileName) => {
+      return getPage(fileName.replace(/\.md$/, ''));
+    })
+    .filter((page): page is Page => page !== undefined);
+}
+
 
 export function getCategory(slug: string): Category | undefined {
   const filePath = path.join(categoriesDirectory, `${slug}.md`);
   if (!fs.existsSync(filePath)) {
-    return undefined;
+     const categoryName = posts.find(p => slugify(p.category) === slug)?.category;
+     if (!categoryName) return undefined;
+     return { slug, title: categoryName };
   }
   const fileContents = fs.readFileSync(filePath, 'utf8');
   const { data } = matter(fileContents);
@@ -102,13 +127,17 @@ export function getCategory(slug: string): Category | undefined {
     slug: slug,
     title: data.title,
     description: data.description || '',
+    meta_title: data.meta_title,
+    meta_description: data.meta_description,
   };
 }
 
 export function getTag(slug: string): Tag | undefined {
   const filePath = path.join(tagsDirectory, `${slug}.md`);
-  if (!fs.existsSync(filePath)) {
-    return undefined;
+   if (!fs.existsSync(filePath)) {
+     const tagName = posts.flatMap(p => p.tags).find(t => slugify(t) === slug);
+     if (!tagName) return undefined;
+     return { slug, title: tagName };
   }
   const fileContents = fs.readFileSync(filePath, 'utf8');
   const { data } = matter(fileContents);
@@ -117,6 +146,8 @@ export function getTag(slug: string): Tag | undefined {
     slug: slug,
     title: data.title,
     description: data.description || '',
+    meta_title: data.meta_title,
+    meta_description: data.meta_description,
   };
 }
 

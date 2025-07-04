@@ -5,11 +5,39 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Calendar, Folder, Tag } from 'lucide-react';
 import { slugify } from '@/lib/utils';
+import type { Metadata } from 'next';
 
 export async function generateStaticParams() {
   return posts.map((post) => ({
     slug: post.slug,
   }));
+}
+
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const post = getPostBySlug(params.slug);
+
+  if (!post) {
+    return {
+      title: 'Post Not Found',
+    };
+  }
+
+  const description = post.meta_description || post.content.substring(0, 160).replace(/\n/g, ' ');
+
+  return {
+    title: post.meta_title || post.title,
+    description: description,
+    openGraph: {
+      title: post.meta_title || post.title,
+      description: description,
+      images: post.thumbnail ? [post.thumbnail] : [],
+    },
+     twitter: {
+       title: post.meta_title || post.title,
+       description: description,
+       images: post.thumbnail ? [post.thumbnail] : [],
+    }
+  };
 }
 
 export default function PostPage({ params }: { params: { slug: string } }) {

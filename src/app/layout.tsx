@@ -4,9 +4,28 @@ import { Toaster } from '@/components/ui/toaster';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
+// IMPORTANT: Replace with your actual site URL for better SEO.
+const siteUrl = "https://your-site-url.com";
+
 export const metadata: Metadata = {
-  title: 'Astro Minimal Blog',
+  title: {
+    default: 'Astro Minimal Blog',
+    template: '%s | Astro Minimal Blog',
+  },
   description: 'A minimal blog built with Next.js and Decap CMS.',
+  openGraph: {
+    title: 'Astro Minimal Blog',
+    description: 'A minimal blog built with Next.js and Decap CMS.',
+    type: 'website',
+    locale: 'en_US',
+    url: siteUrl,
+    siteName: 'Astro Minimal Blog',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Astro Minimal Blog',
+    description: 'A minimal blog built with Next.js and Decap CMS.',
+  },
 };
 
 export default function RootLayout({

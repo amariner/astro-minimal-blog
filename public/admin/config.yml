@@ -1,46 +1,62 @@
 backend:
   name: git-gateway
   branch: master
-
-media_folder: 'public/images/uploads'
-public_folder: '/images/uploads'
-
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
 collections:
-  - name: 'blog'
-    label: 'Blog'
-    folder: 'content/posts'
+  - name: "blog"
+    label: "Blog"
+    folder: "content/posts"
     create: true
-    slug: '{{slug}}'
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     fields:
-      - {label: 'Title', name: 'title', widget: 'string'}
-      - {label: 'Publish Date', name: 'date', widget: 'datetime'}
-      - {label: 'Category', name: 'category', widget: 'relation', collection: 'categories', search_fields: ['title'], value_field: 'title', display_fields: ['title']}
-      - {label: 'Tags', name: 'tags', widget: 'relation', collection: 'tags', search_fields: ['title'], value_field: 'title', display_fields: ['title'], multiple: true}
-      - {label: 'Thumbnail', name: 'thumbnail', widget: 'image', required: false}
-      - {label: 'Body', name: 'body', widget: 'markdown'}
-  - name: 'pages'
-    label: 'Pages'
-    folder: 'content/pages'
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Meta Title", name: "meta_title", widget: "string", required: false }
+      - { label: "Meta Description", name: "meta_description", widget: "string", required: false }
+      - { label: "Publish Date", name: "date", widget: "datetime" }
+      - label: "Category"
+        name: "category"
+        widget: "relation"
+        collection: "categories"
+        search_fields: ["title"]
+        value_field: "title"
+        display_fields: ["title"]
+      - label: "Tags"
+        name: "tags"
+        widget: "relation"
+        collection: "tags"
+        search_fields: ["title"]
+        value_field: "title"
+        display_fields: ["title"]
+        multiple: true
+      - { label: "Featured Image", name: "thumbnail", widget: "image", required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+  - name: "pages"
+    label: "Pages"
+    folder: "content/pages"
     create: true
-    slug: '{{slug}}'
     fields:
-      - {label: 'Title', name: 'title', widget: 'string'}
-      - {label: 'Body', name: 'body', widget: 'markdown'}
-  - name: 'categories'
-    label: 'Categories'
-    folder: 'content/categories'
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Meta Title", name: "meta_title", widget: "string", required: false }
+      - { label: "Meta Description", name: "meta_description", widget: "string", required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+  - name: "categories"
+    label: "Categories"
+    folder: "content/categories"
     create: true
-    slug: '{{slug}}'
-    identifier_field: 'title'
+    slug: "{{slug}}"
     fields:
-      - {label: 'Category Name', name: 'title', widget: 'string'}
-      - {label: 'Description', name: 'description', widget: 'markdown', required: false}
-  - name: 'tags'
-    label: 'Tags'
-    folder: 'content/tags'
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Meta Title", name: "meta_title", widget: "string", required: false }
+      - { label: "Meta Description", name: "meta_description", widget: "string", required: false }
+      - { label: "Description", name: "description", widget: "string", required: false }
+  - name: "tags"
+    label: "Tags"
+    folder: "content/tags"
     create: true
-    slug: '{{slug}}'
-    identifier_field: 'title'
+    slug: "{{slug}}"
     fields:
-      - {label: 'Tag Name', name: 'title', widget: 'string'}
-      - {label: 'Description', name: 'description', widget: 'markdown', required: false}
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Meta Title", name: "meta_title", widget: "string", required: false }
+      - { label: "Meta Description", name: "meta_description", widget: "string", required: false }
+      - { label: "Description", name: "description", widget: "string", required: false }

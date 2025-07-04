@@ -2,6 +2,7 @@ import { getPostsByCategory, getCategory, getAllCategories } from '@/lib/content
 import PostCard from '@/components/PostCard';
 import { notFound } from 'next/navigation';
 import { slugify } from '@/lib/utils';
+import type { Metadata } from 'next';
 
 export async function generateStaticParams() {
   const categories = getAllCategories();
@@ -9,6 +10,18 @@ export async function generateStaticParams() {
     category: slugify(category),
   }));
 }
+
+export async function generateMetadata({ params }: { params: { category: string } }): Promise<Metadata> {
+  const categoryData = getCategory(params.category);
+  const categoryName = categoryData?.title || params.category.charAt(0).toUpperCase() + params.category.slice(1);
+  const description = categoryData?.meta_description || categoryData?.description || `Posts filed under the "${categoryName}" category.`;
+
+  return {
+    title: categoryData?.meta_title || categoryName,
+    description: description,
+  };
+}
+
 
 export default function CategoryPage({ params }: { params: { category: string } }) {
   const posts = getPostsByCategory(params.category);

@@ -2,6 +2,7 @@ import { getAllTags, getPostsByTag, getTag } from '@/lib/content';
 import PostCard from '@/components/PostCard';
 import { notFound } from 'next/navigation';
 import { slugify } from '@/lib/utils';
+import type { Metadata } from 'next';
 
 export async function generateStaticParams() {
   const tags = getAllTags();
@@ -9,6 +10,18 @@ export async function generateStaticParams() {
     tag: slugify(tag),
   }));
 }
+
+export async function generateMetadata({ params }: { params: { tag: string } }): Promise<Metadata> {
+  const tagData = getTag(params.tag);
+  const tagName = tagData?.title || params.tag.charAt(0).toUpperCase() + params.tag.slice(1);
+  const description = tagData?.meta_description || tagData?.description || `Posts tagged with "${tagName}".`;
+
+  return {
+    title: tagData?.meta_title || tagName,
+    description: description,
+  };
+}
+
 
 export default function TagPage({ params }: { params: { tag: string } }) {
   const posts = getPostsByTag(params.tag);
