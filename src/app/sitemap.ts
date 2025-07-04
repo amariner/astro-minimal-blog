@@ -1,8 +1,7 @@
 import { getAllPages, posts, getAllCategories, getAllTags } from '@/lib/content';
-import { slugify } from '@/lib/utils';
 import { MetadataRoute } from 'next';
 
-// IMPORTANT: Replace with your actual site URL
+// IMPORTANT: Replace with your actual, live site URL for the sitemap to be valid.
 const baseUrl = 'https://your-site-url.com';
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -21,14 +20,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   const categoryUrls = getAllCategories().map((category) => ({
-    url: `${baseUrl}/categories/${slugify(category)}`,
+    url: `${baseUrl}/categories/${category.slug}`,
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.6,
   }));
   
   const tagUrls = getAllTags().map((tag) => ({
-    url: `${baseUrl}/tags/${slugify(tag)}`,
+    url: `${baseUrl}/tags/${tag.slug}`,
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.6,
