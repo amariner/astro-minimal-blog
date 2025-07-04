@@ -1,15 +1,14 @@
+
 backend:
   name: git-gateway
   branch: main
 
-publish_mode: editorial_workflow
-
-media_folder: "public/uploads"
-public_folder: "/uploads"
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
 
 collections:
   - name: "posts"
-    label: "Posts"
+    label: "Blog Posts"
     folder: "content/posts"
     create: true
     slug: "{{slug}}"
@@ -23,7 +22,7 @@ collections:
   - name: "pages"
     label: "Pages"
     files:
-      - label: "About"
+      - label: "About Page"
         name: "about"
         file: "content/pages/about.md"
         fields:

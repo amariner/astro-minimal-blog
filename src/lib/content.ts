@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import matter from 'gray-matter';
 
 export interface Post {
   slug: string;
@@ -21,35 +22,6 @@ const contentDirectory = path.join(process.cwd(), 'content');
 const postsDirectory = path.join(contentDirectory, 'posts');
 const pagesDirectory = path.join(contentDirectory, 'pages');
 
-const frontmatterRegex = /---\s*([\s\S]*?)\s*---/;
-
-function parseFrontmatter(fileContents: string) {
-  const match = frontmatterRegex.exec(fileContents);
-  const frontmatter = match ? match[1] : '';
-  const content = fileContents.replace(frontmatterRegex, '').trim();
-
-  const metadata: { [key: string]: any } = {};
-  frontmatter.split('\n').forEach(line => {
-    const colonIndex = line.indexOf(':');
-    if (colonIndex > 0) {
-      const key = line.slice(0, colonIndex).trim();
-      let value = line.slice(colonIndex + 1).trim();
-      if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
-        value = value.slice(1, -1);
-      }
-      
-      if (key === 'tags') {
-        metadata[key] = value ? value.split(',').map(tag => tag.trim()) : [];
-      } else {
-        metadata[key] = value;
-      }
-    }
-  });
-
-  return { metadata, content };
-}
-
-
 function getPosts(): Post[] {
   if (!fs.existsSync(postsDirectory)) {
     return [];
@@ -60,16 +32,26 @@ function getPosts(): Post[] {
     const fullPath = path.join(postsDirectory, fileName);
     const fileContents = fs.readFileSync(fullPath, 'utf8');
 
-    const { metadata, content } = parseFrontmatter(fileContents);
+    const { data, content } = matter(fileContents);
+    
+    let tags: string[] = [];
+    if (data.tags) {
+        if (typeof data.tags === 'string') {
+            tags = data.tags.split(',').map(tag => tag.trim());
+        } else {
+            tags = data.tags;
+        }
+    }
 
     return {
       slug,
       content,
-      ...metadata,
+      ...(data as any),
+      tags,
     } as Post;
   });
 
-  return allPostsData.sort((a, b) => (a.date < b.date ? 1 : -1));
+  return allPostsData.sort((a, b) => (new Date(b.date).getTime() - new Date(a.date).getTime()));
 }
 
 export const posts = getPosts();
@@ -84,11 +66,11 @@ export function getPage(pageName: string): Page | undefined {
     return undefined;
   }
   const fileContents = fs.readFileSync(fullPath, 'utf8');
-  const { metadata, content } = parseFrontmatter(fileContents);
+  const { data, content } = matter(fileContents);
 
   return {
     slug: pageName,
-    title: metadata.title,
+    title: data.title,
     content,
   };
 }
