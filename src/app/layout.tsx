@@ -5,28 +5,26 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import React from 'react';
 import { HeadSnippets, BodyStartSnippets, BodyEndSnippets } from '@/components/CodeInjector';
-
-// IMPORTANT: Replace with your actual site URL for better SEO.
-const siteUrl = "https://your-site-url.com";
+import { siteConfig } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: {
-    default: 'Astro Minimal Blog',
-    template: '%s | Astro Minimal Blog',
+    default: siteConfig.name,
+    template: `%s | ${siteConfig.name}`,
   },
-  description: 'A minimal blog built with Next.js and Decap CMS.',
+  description: siteConfig.description,
   openGraph: {
-    title: 'Astro Minimal Blog',
-    description: 'A minimal blog built with Next.js and Decap CMS.',
+    title: siteConfig.name,
+    description: siteConfig.description,
     type: 'website',
     locale: 'en_US',
-    url: siteUrl,
-    siteName: 'Astro Minimal Blog',
+    url: siteConfig.url,
+    siteName: siteConfig.name,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Astro Minimal Blog',
-    description: 'A minimal blog built with Next.js and Decap CMS.',
+    title: siteConfig.name,
+    description: siteConfig.description,
   },
 };
 

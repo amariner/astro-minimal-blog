@@ -1,8 +1,8 @@
 import { getAllPages, posts, getAllCategories, getAllTags } from '@/lib/content';
 import { MetadataRoute } from 'next';
+import { siteConfig } from '@/lib/site';
 
-// IMPORTANT: Replace with your actual, live site URL for the sitemap to be valid.
-const baseUrl = 'https://your-site-url.com';
+const baseUrl = siteConfig.url;
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const postUrls = posts.map((post) => ({
