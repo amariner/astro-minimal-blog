@@ -50,7 +50,7 @@ const tagsDirectory = path.join(contentDirectory, 'tags');
 
 function getRawData<T extends {slug: string, title: string}>(directory: string): T[] {
   if (!fs.existsSync(directory)) return [];
-  const files = fs.readdirSync(files);
+  const files = fs.readdirSync(directory);
   return files.map(file => {
     const fileName = file.replace(/\.md$/, '');
     const fullPath = path.join(directory, file);
