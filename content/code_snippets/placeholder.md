@@ -1,7 +1,7 @@
 ---
 title: Placeholder
 head_code:
-  code: <div class="add-code"></div>
+  code: <script>/* Placeholder for head scripts */</script>
 body_code:
   code: <div class="add-code-2"></div>
 ---
