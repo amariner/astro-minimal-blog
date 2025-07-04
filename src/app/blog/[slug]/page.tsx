@@ -4,7 +4,6 @@ import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Calendar, Folder, Tag } from 'lucide-react';
-import { slugify } from '@/lib/utils';
 import type { Metadata } from 'next';
 
 export async function generateStaticParams() {
@@ -58,7 +57,7 @@ export default function PostPage({ params }: { params: { slug: string } }) {
           </div>
           <div className="flex items-center gap-2">
             <Folder className="w-4 h-4" />
-            <Link href={`/categories/${slugify(post.category)}`} className="hover:text-primary">{post.category}</Link>
+            <Link href={`/categories/${post.category.slug}`} className="hover:text-primary">{post.category.title}</Link>
           </div>
         </div>
         {post.thumbnail && (
@@ -76,10 +75,10 @@ export default function PostPage({ params }: { params: { slug: string } }) {
       <footer className="mt-8">
         <div className="flex items-center gap-2 flex-wrap">
           {post.tags.map((tag) => (
-            <Link key={tag} href={`/tags/${slugify(tag)}`}>
+            <Link key={tag.slug} href={`/tags/${tag.slug}`}>
                <Badge variant="secondary" className="hover:bg-accent transition-colors">
                 <Tag className="w-3 h-3 mr-1" />
-                {tag}
+                {tag.title}
               </Badge>
             </Link>
           ))}
