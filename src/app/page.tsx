@@ -1,11 +1,11 @@
 import { posts } from '@/lib/content';
 import PostCard from '@/components/PostCard';
-import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
 
 export default function Home() {
   const latestPost = posts[0];
+  const otherPosts = posts.slice(1);
 
   return (
     <div className="space-y-16 md:space-y-24">
@@ -49,7 +49,7 @@ export default function Home() {
       <section>
         <h2 className="text-3xl md:text-4xl font-bold tracking-tighter text-center mb-12">All Posts</h2>
         <div className="grid gap-x-8 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
-          {posts.map((post) => (
+          {otherPosts.map((post) => (
             <PostCard key={post.slug} post={post} />
           ))}
         </div>
