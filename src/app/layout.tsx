@@ -41,13 +41,13 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Space+Grotesk:wght@300..700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap"
           rel="stylesheet"
         />
         <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
         <HeadSnippets />
       </head>
-      <body className="font-body antialiased min-h-screen flex flex-col">
+      <body className="font-sans antialiased min-h-screen flex flex-col">
         <BodyStartSnippets />
         <Header />
         <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
