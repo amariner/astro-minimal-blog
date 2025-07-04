@@ -20,7 +20,7 @@ function HeadSnippets() {
   );
 }
 
-function BodySnippets() {
+function BodyStartSnippets() {
   noStore();
   const snippets = getAllCodeSnippets();
 
@@ -28,11 +28,26 @@ function BodySnippets() {
     <>
       {snippets.map((snippet) =>
         snippet.body_code ? (
-          <React.Fragment key={`body-${snippet.slug}`}>{parse(snippet.body_code)}</React.Fragment>
+          <React.Fragment key={`body-start-${snippet.slug}`}>{parse(snippet.body_code)}</React.Fragment>
         ) : null
       )}
     </>
   );
 }
 
-export { HeadSnippets, BodySnippets };
+function BodyEndSnippets() {
+  noStore();
+  const snippets = getAllCodeSnippets();
+
+  return (
+    <>
+      {snippets.map((snippet) =>
+        snippet.body_end_code ? (
+          <React.Fragment key={`body-end-${snippet.slug}`}>{parse(snippet.body_end_code)}</React.Fragment>
+        ) : null
+      )}
+    </>
+  );
+}
+
+export { HeadSnippets, BodyStartSnippets, BodyEndSnippets };

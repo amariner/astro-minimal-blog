@@ -1,8 +1,10 @@
 backend:
   name: git-gateway
   branch: master
+
 media_folder: "public/images/uploads"
 public_folder: "/images/uploads"
+
 collections:
   - name: "blog"
     label: "Blog"
@@ -11,49 +13,64 @@ collections:
     slug: "{{slug}}"
     fields:
       - { label: "Título", name: "title", widget: "string" }
-      - { label: "Slug", name: "slug", widget: "string", required: false, hint: "La URL amigable. Si se deja en blanco, se genera a partir del título." }
-      - { label: "Fecha de Publicación", name: "date", widget: "datetime" }
-      - { label: "Categoría", name: "category", widget: "relation", collection: "categories", search_fields: ["title"], value_field: "title", display_fields: ["title"] }
-      - { label: "Tags", name: "tags", widget: "relation", collection: "tags", search_fields: ["title"], value_field: "title", display_fields: ["title"], multiple: true }
-      - { label: "Imagen de Miniatura", name: "thumbnail", widget: "image", required: false }
-      - { label: "Meta Título (SEO)", name: "meta_title", widget: "string", required: false, hint: "Título para buscadores. Recomendado: 50-60 caracteres." }
-      - { label: "Meta Descripción (SEO)", name: "meta_description", widget: "string", required: false, hint: "Descripción para buscadores. Recomendado: 150-160 caracteres." }
-      - { label: "Cuerpo", name: "body", widget: "markdown" }
+      - { label: "Slug", name: "slug", widget: "string", required: false, hint: "La URL del post. Si se deja en blanco, se generará a partir del título." }
+      - { label: "Fecha de publicación", name: "date", widget: "datetime" }
+      - label: "Categoría"
+        name: "category"
+        widget: "relation"
+        collection: "categories"
+        search_fields: ["title"]
+        value_field: "title"
+        display_fields: ["title"]
+      - label: "Etiquetas"
+        name: "tags"
+        widget: "relation"
+        collection: "tags"
+        search_fields: ["title"]
+        value_field: "title"
+        display_fields: ["title"]
+        multiple: true
+      - { label: "Miniatura", name: "thumbnail", widget: "image", required: false }
+      - { label: "Meta Título", name: "meta_title", widget: "string", required: false, hint: "El título que se mostrará en los buscadores (recomendado: 50-60 caracteres)." }
+      - { label: "Meta Descripción", name: "meta_description", widget: "string", required: false, hint: "La descripción para los buscadores (recomendado: 150-160 caracteres)." }
+      - { label: "Contenido", name: "body", widget: "markdown" }
   - name: "pages"
-    label: "Pages"
+    label: "Páginas"
     folder: "content/pages"
     create: true
     slug: "{{slug}}"
     fields:
       - { label: "Título", name: "title", widget: "string" }
-      - { label: "Slug", name: "slug", widget: "string", required: false, hint: "La URL amigable. Si se deja en blanco, se genera a partir del título." }
-      - { label: "Meta Título (SEO)", name: "meta_title", widget: "string", required: false, hint: "Título para buscadores. Recomendado: 50-60 caracteres." }
-      - { label: "Meta Descripción (SEO)", name: "meta_description", widget: "string", required: false, hint: "Descripción para buscadores. Recomendado: 150-160 caracteres." }
-      - { label: "Cuerpo", name: "body", widget: "markdown" }
+      - { label: "Slug", name: "slug", widget: "string", required: false, hint: "La URL de la página. Si se deja en blanco, se generará a partir del título." }
+      - { label: "Meta Título", name: "meta_title", widget: "string", required: false, hint: "El título que se mostrará en los buscadores (recomendado: 50-60 caracteres)." }
+      - { label: "Meta Descripción", name: "meta_description", widget: "string", required: false, hint: "La descripción para los buscadores (recomendado: 150-160 caracteres)." }
+      - { label: "Contenido", name: "body", widget: "markdown" }
   - name: "categories"
-    label: "Categories"
+    label: "Categorías"
     folder: "content/categories"
     create: true
     slug: "{{slug}}"
+    identifier_field: "title"
     fields:
       - { label: "Título", name: "title", widget: "string" }
-      - { label: "Slug", name: "slug", widget: "string", required: false, hint: "La URL amigable. Si se deja en blanco, se genera a partir del título." }
-      - { label: "Meta Título (SEO)", name: "meta_title", widget: "string", required: false }
-      - { label: "Meta Descripción (SEO)", name: "meta_description", widget: "string", required: false }
-      - { label: "Descripción", name: "description", widget: "string", required: false, hint: "Descripción corta que aparece en la parte superior de la página de la categoría." }
-      - { label: "Contenido", name: "content", widget: "markdown", required: false, hint: "Contenido adicional que aparece debajo de la lista de posts." }
+      - { label: "Slug", name: "slug", widget: "string", required: false, hint: "La URL de la categoría. Si se deja en blanco, se generará a partir del título." }
+      - { label: "Meta Título", name: "meta_title", widget: "string", required: false, hint: "El título que se mostrará en los buscadores (recomendado: 50-60 caracteres)." }
+      - { label: "Meta Descripción", name: "meta_description", widget: "string", required: false, hint: "La descripción para los buscadores (recomendado: 150-160 caracteres)." }
+      - { label: "Descripción Corta", name: "description", widget: "string", required: false, hint: "Un texto corto que aparece en la parte superior de la página de la categoría." }
+      - { label: "Contenido", name: "content", widget: "markdown", required: false, hint: "Contenido extenso que aparecerá debajo de la lista de posts." }
   - name: "tags"
-    label: "Tags"
+    label: "Etiquetas"
     folder: "content/tags"
     create: true
     slug: "{{slug}}"
+    identifier_field: "title"
     fields:
       - { label: "Título", name: "title", widget: "string" }
-      - { label: "Slug", name: "slug", widget: "string", required: false, hint: "La URL amigable. Si se deja en blanco, se genera a partir del título." }
-      - { label: "Meta Título (SEO)", name: "meta_title", widget: "string", required: false }
-      - { label: "Meta Descripción (SEO)", name: "meta_description", widget: "string", required: false }
-      - { label: "Descripción", name: "description", widget: "string", required: false, hint: "Descripción corta que aparece en la parte superior de la página de la etiqueta." }
-      - { label: "Contenido", name: "content", widget: "markdown", required: false, hint: "Contenido adicional que aparece debajo de la lista de posts." }
+      - { label: "Slug", name: "slug", widget: "string", required: false, hint: "La URL de la etiqueta. Si se deja en blanco, se generará a partir del título." }
+      - { label: "Meta Título", name: "meta_title", widget: "string", required: false, hint: "El título que se mostrará en los buscadores (recomendado: 50-60 caracteres)." }
+      - { label: "Meta Descripción", name: "meta_description", widget: "string", required: false, hint: "La descripción para los buscadores (recomendado: 150-160 caracteres)." }
+      - { label: "Descripción Corta", name: "description", widget: "string", required: false, hint: "Un texto corto que aparece en la parte superior de la página de la etiqueta." }
+      - { label: "Contenido", name: "content", widget: "markdown", required: false, hint: "Contenido extenso que aparecerá debajo de la lista de posts." }
   - name: "code_snippets"
     label: "Insertar Código"
     folder: "content/code_snippets"
@@ -61,5 +78,6 @@ collections:
     slug: "{{slug}}"
     fields:
       - { label: "Título", name: "title", widget: "string", hint: "Un nombre para identificar este snippet, ej: Google Tag Manager" }
-      - { label: "Código para <head>", name: "head_code", widget: "code", required: false, hint: "Pega aquí el código que debe ir en la etiqueta <head> de todas las páginas." }
-      - { label: "Código para <body>", name: "body_code", widget: "code", required: false, hint: "Pega aquí el código que debe ir justo después de la apertura de la etiqueta <body>." }
+      - { label: "Código para <head>", name: "head_code", widget: "code", required: false, hint: "Pega aquí el código que debe ir en la etiqueta &lt;head&gt; de todas las páginas." }
+      - { label: "Código al inicio del &lt;body&gt;", name: "body_code", widget: "code", required: false, hint: "Pega aquí el código que debe ir justo después de la apertura de la etiqueta &lt;body&gt;." }
+      - { label: "Código al final del &lt;body&gt;", name: "body_end_code", widget: "code", required: false, hint: "Pega aquí el código que debe ir justo antes de cerrar la etiqueta &lt;body&gt;." }

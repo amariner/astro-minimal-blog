@@ -47,6 +47,7 @@ export interface CodeSnippet {
   title: string;
   head_code?: string;
   body_code?: string;
+  body_end_code?: string;
 }
 
 
@@ -225,12 +226,14 @@ export function getAllCodeSnippets(): CodeSnippet[] {
 
     const head_code = getCodeString(data.head_code);
     const body_code = getCodeString(data.body_code);
+    const body_end_code = getCodeString(data.body_end_code);
 
     return {
       slug,
       title: data.title,
       head_code,
       body_code,
+      body_end_code,
     };
   }).filter((s): s is CodeSnippet => s !== null);
 

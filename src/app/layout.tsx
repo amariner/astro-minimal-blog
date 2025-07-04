@@ -4,7 +4,7 @@ import { Toaster } from '@/components/ui/toaster';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import React from 'react';
-import { HeadSnippets, BodySnippets } from '@/components/CodeInjector';
+import { HeadSnippets, BodyStartSnippets, BodyEndSnippets } from '@/components/CodeInjector';
 
 // IMPORTANT: Replace with your actual site URL for better SEO.
 const siteUrl = "https://your-site-url.com";
@@ -48,7 +48,7 @@ export default function RootLayout({
         <HeadSnippets />
       </head>
       <body className="font-body antialiased min-h-screen flex flex-col">
-        <BodySnippets />
+        <BodyStartSnippets />
         <Header />
         <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {children}
@@ -70,6 +70,7 @@ export default function RootLayout({
             `,
           }}
         />
+        <BodyEndSnippets />
       </body>
     </html>
   );
