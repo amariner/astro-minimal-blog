@@ -3,6 +3,7 @@ import PostCard from '@/components/PostCard';
 import { notFound } from 'next/navigation';
 import { slugify } from '@/lib/utils';
 import type { Metadata } from 'next';
+import { Card, CardContent } from '@/components/ui/card';
 
 export async function generateStaticParams() {
   const categories = getAllCategories();
@@ -49,6 +50,15 @@ export default function CategoryPage({ params }: { params: { category: string } 
         </div>
       ) : (
          <p className="text-center text-muted-foreground">No posts found in this category yet.</p>
+      )}
+      {categoryData?.content && (
+        <div className="mt-12">
+          <Card>
+            <CardContent className="prose dark:prose-invert max-w-none pt-6">
+              <pre className="whitespace-pre-wrap font-body text-base bg-transparent p-0">{categoryData.content}</pre>
+            </CardContent>
+          </Card>
+        </div>
       )}
     </div>
   );

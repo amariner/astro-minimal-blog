@@ -3,6 +3,7 @@ import PostCard from '@/components/PostCard';
 import { notFound } from 'next/navigation';
 import { slugify } from '@/lib/utils';
 import type { Metadata } from 'next';
+import { Card, CardContent } from '@/components/ui/card';
 
 export async function generateStaticParams() {
   const tags = getAllTags();
@@ -49,6 +50,15 @@ export default function TagPage({ params }: { params: { tag: string } }) {
         </div>
       ) : (
          <p className="text-center text-muted-foreground">No posts found with this tag yet.</p>
+      )}
+      {tagData?.content && (
+        <div className="mt-12">
+          <Card>
+            <CardContent className="prose dark:prose-invert max-w-none pt-6">
+              <pre className="whitespace-pre-wrap font-body text-base bg-transparent p-0">{tagData.content}</pre>
+            </CardContent>
+          </Card>
+        </div>
       )}
     </div>
   );

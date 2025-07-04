@@ -27,6 +27,7 @@ export interface Category {
   slug: string;
   title: string;
   description?: string;
+  content?: string;
   meta_title?: string;
   meta_description?: string;
 }
@@ -35,6 +36,7 @@ export interface Tag {
   slug: string;
   title: string;
   description?: string;
+  content?: string;
   meta_title?: string;
   meta_description?: string;
 }
@@ -121,12 +123,13 @@ export function getCategory(slug: string): Category | undefined {
      return { slug, title: categoryName };
   }
   const fileContents = fs.readFileSync(filePath, 'utf8');
-  const { data } = matter(fileContents);
+  const { data, content } = matter(fileContents);
 
   return {
-    slug: slug,
+    slug: data.slug || slug,
     title: data.title,
     description: data.description || '',
+    content: content,
     meta_title: data.meta_title,
     meta_description: data.meta_description,
   };
@@ -140,12 +143,13 @@ export function getTag(slug: string): Tag | undefined {
      return { slug, title: tagName };
   }
   const fileContents = fs.readFileSync(filePath, 'utf8');
-  const { data } = matter(fileContents);
+  const { data, content } = matter(fileContents);
 
   return {
-    slug: slug,
+    slug: data.slug || slug,
     title: data.title,
     description: data.description || '',
+    content: content,
     meta_title: data.meta_title,
     meta_description: data.meta_description,
   };
